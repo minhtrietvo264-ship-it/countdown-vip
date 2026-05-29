@@ -1,332 +1,459 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đếm Ngược Tốt Nghiệp THPT 2026 - Võ Minh Triết</title>
-    <style>
-        /* --- GIAO DIỆN & HIỆU ỨNG HI-TECH --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đếm Ngược THPT 2026 — Võ Minh Triết</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #060810 url('https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=1920') no-repeat center center/cover;
-            color: #fff;
-            overflow: hidden;
-            position: relative;
-        }
-        body::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(6, 8, 16, 0.8); z-index: 1;
-        }
+    :root {
+      --c-bg:        #07090f;
+      --c-card:      rgba(255,255,255,0.03);
+      --c-border:    rgba(255,255,255,0.08);
+      --c-muted:     rgba(148,163,184,0.75);
+      --c-hint:      rgba(100,116,139,0.7);
+      --font-ui:     'Space Grotesk', sans-serif;
+      --font-mono:   'JetBrains Mono', monospace;
+      --radius-lg:   18px;
+      --radius-md:   12px;
+      --radius-sm:   8px;
+    }
 
-        #particles-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--c-bg);
+      color: #f1f5f9;
+      font-family: var(--font-ui);
+      overflow: hidden;
+    }
 
-        /* Hộp kính mờ siêu VIP */
-        .main-container {
-            position: relative; z-index: 3; text-align: center;
-            background: rgba(255, 255, 255, 0.03); padding: 45px 40px; border-radius: 30px;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 168, 255, 0.15);
-            max-width: 780px; width: 100%;
-            transition: all 0.5s ease;
-        }
+    /* =============================================
+       BACKGROUND LAYERS
+    ============================================= */
+    #bg-img {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        url('https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=1920')
+        no-repeat center center / cover;
+      filter: blur(2px) brightness(0.25) saturate(0.6);
+    }
 
-        /* Thanh tương tác chọn môn học (Tabs) */
-        .subject-tabs {
-            display: inline-flex;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px;
-            border-radius: 50px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            gap: 5px;
-        }
-        .tab-btn {
-            font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;
-            padding: 10px 20px; border-radius: 50px; cursor: pointer;
-            text-transform: uppercase; border: none; background: transparent;
-            color: #85929e; transition: all 0.3s ease;
-        }
-        
-        /* Trạng thái Active của từng môn */
-        .tab-btn.active[data-mode="all"] { background: rgba(0, 206, 166, 0.25); color: #00cea6; text-shadow: 0 0 10px #00cea6; }
-        .tab-btn.active[data-mode="toan"] { background: rgba(255, 71, 87, 0.25); color: #ff4757; text-shadow: 0 0 10px #ff4757; }
-        .tab-btn.active[data-mode="ly"] { background: rgba(30, 144, 255, 0.25); color: #1e90ff; text-shadow: 0 0 10px #1e90ff; }
-        .tab-btn.active[data-mode="hoa"] { background: rgba(46, 213, 115, 0.25); color: #2ed573; text-shadow: 0 0 10px #2ed573; }
-        .tab-btn.active[data-mode="anh"] { background: rgba(255, 165, 0, 0.25); color: #ffa500; text-shadow: 0 0 10px #ffa500; }
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 1;
+      pointer-events: none;
+    }
 
-        h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; transition: all 0.5s ease; }
-        
-        /* Màu chữ tiêu đề thay đổi động theo từng tab */
-        .theme-all h1 { background: linear-gradient(45deg, #00cea6, #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .theme-toan h1 { background: linear-gradient(45deg, #ff6b81, #ff4757); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .theme-ly h1 { background: linear-gradient(45deg, #70a1ff, #1e90ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .theme-hoa h1 { background: linear-gradient(45deg, #7bed9f, #2ed573); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .theme-anh h1 { background: linear-gradient(45deg, #ffdf00, #ffa500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    #vignette {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(7,9,15,0.75) 100%);
+    }
 
-        /* Khung trường Đại học tinh tế */
-        .university-brand {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #00a8ff;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            text-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
-        }
+    /* =============================================
+       MAIN CARD
+    ============================================= */
+    .page {
+      position: relative; z-index: 3;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px 16px;
+    }
 
-        .target-date { font-size: 0.95rem; color: #a4b0be; margin-bottom: 35px; font-style: italic; transition: all 0.3s; }
+    .card {
+      width: 100%; max-width: 680px;
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: 28px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      padding: 36px 32px 28px;
+      display: flex; flex-direction: column; align-items: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
 
-        /* Khung lưới đồng hồ */
-        .countdown-grid { display: flex; justify-content: space-between; gap: 20px; }
-        .time-box { flex: 1; background: rgba(0, 0, 0, 0.45); padding: 25px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.03); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
-        .time-box:hover { transform: translateY(-5px); }
+    /* =============================================
+       HEADER
+    ============================================= */
+    .badge-school {
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px;
+      border: 1px solid rgba(56,189,248,0.3);
+      color: #38bdf8;
+      background: rgba(56,189,248,0.07);
+      margin-bottom: 14px;
+    }
 
-        .num { font-size: 3.8rem; font-weight: 700; font-family: 'Courier New', monospace; line-height: 1; transition: all 0.5s ease; }
-        .label { font-size: 0.75rem; color: #85929e; text-transform: uppercase; letter-spacing: 2px; margin-top: 12px; display: block; }
+    .main-title {
+      font-size: 1.65rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; text-align: center;
+      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #34d399 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
 
-        /* Đổ màu NEON ĐỘNG cho các ô số dựa theo Tab đang chọn */
-        .theme-all .num { color: #00ffcc !important; text-shadow: 0 0 20px rgba(0, 255, 204, 0.6) !important; }
-        .theme-all .time-box:hover { border-color: rgba(0, 255, 204, 0.4); box-shadow: 0 10px 20px rgba(0, 255, 204, 0.15); }
+    .subtitle {
+      font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--c-hint); margin-bottom: 22px;
+    }
 
-        .theme-toan .num { color: #ff4757 !important; text-shadow: 0 0 20px rgba(255, 71, 87, 0.7) !important; }
-        .theme-toan .time-box:hover { border-color: rgba(255, 71, 87, 0.4); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.15); }
+    /* =============================================
+       TABS
+    ============================================= */
+    .tabs {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 5px;
+      margin-bottom: 18px;
+    }
 
-        .theme-ly .num { color: #1e90ff !important; text-shadow: 0 0 20px rgba(30, 144, 255, 0.7) !important; }
-        .theme-ly .time-box:hover { border-color: rgba(30, 144, 255, 0.4); box-shadow: 0 10px 20px rgba(30, 144, 255, 0.15); }
+    .tab {
+      font-family: var(--font-ui);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 8px 16px; border-radius: var(--radius-md);
+      border: none; background: transparent;
+      color: rgba(148,163,184,0.65);
+      cursor: pointer;
+      transition: all .22s ease;
+      white-space: nowrap;
+    }
+    .tab:hover { color: #e2e8f0; background: rgba(255,255,255,0.06); }
 
-        .theme-hoa .num { color: #2ed573 !important; text-shadow: 0 0 20px rgba(46, 213, 115, 0.7) !important; }
-        .theme-hoa .time-box:hover { border-color: rgba(46, 213, 115, 0.4); box-shadow: 0 10px 20px rgba(46, 213, 115, 0.15); }
+    .tab.a-all  { background: rgba(52,211,153,0.14);  color: #34d399; box-shadow: 0 0 14px rgba(52,211,153,0.18); }
+    .tab.a-toan { background: rgba(248,113,113,0.14); color: #f87171; box-shadow: 0 0 14px rgba(248,113,113,0.18); }
+    .tab.a-ly   { background: rgba(56,189,248,0.14);  color: #38bdf8; box-shadow: 0 0 14px rgba(56,189,248,0.18); }
+    .tab.a-hoa  { background: rgba(52,211,153,0.14);  color: #34d399; box-shadow: 0 0 14px rgba(52,211,153,0.18); }
+    .tab.a-anh  { background: rgba(251,191,36,0.14);  color: #fbbf24; box-shadow: 0 0 14px rgba(251,191,36,0.18); }
 
-        .theme-anh .num { color: #ffa500 !important; text-shadow: 0 0 20px rgba(255, 165, 0, 0.7) !important; }
-        .theme-anh .time-box:hover { border-color: rgba(255, 165, 0, 0.4); box-shadow: 0 10px 20px rgba(255, 165, 0, 0.15); }
+    /* =============================================
+       INFO CHIP
+    ============================================= */
+    .info-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .info-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      transition: background .35s;
+    }
+    .info-chip {
+      font-size: 11px; font-weight: 500; line-height: 1.5;
+      color: rgba(203,213,225,0.85);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+    }
+    .info-chip b { font-weight: 700; color: #f1f5f9; }
 
-        /* Thông tin bản quyền tác giả */
-        .author-credits {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            letter-spacing: 1px;
-        }
-        .author-credits span {
-            color: #ffffff;
-            font-weight: 600;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-        }
+    /* =============================================
+       PROGRESS BAR
+    ============================================= */
+    .prog-wrap {
+      width: 100%; max-width: 500px;
+      margin-bottom: 18px;
+    }
+    .prog-track {
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px; overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%; border-radius: 2px;
+      transition: width .9s ease, background .4s;
+    }
 
-        /* --- HIỆU ỨNG CHỮ GOOD LUCK ĐẲNG CẤP --- */
-        .goodluck-container {
-            margin-top: 25px;
-            perspective: 500px;
-        }
-        .goodluck-text {
-            font-size: 2.2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            display: inline-block;
-            background: linear-gradient(to right, #ff4757, #1e90ff, #2ed573, #ffa500, #ff4757);
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShine 4s linear infinite, floating 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(30, 144, 255, 0.6));
-        }
+    /* =============================================
+       CLOCK GRID
+    ============================================= */
+    .clock-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%; max-width: 500px;
+      margin-bottom: 22px;
+    }
 
-        @keyframes textShine {
-            0% { background-position: 0% center; }
-            100% { background-position: 300% center; }
-        }
-        @keyframes floating {
-            0%, 100% { transform: translateY(0) rotateX(5px); }
-            50% { transform: translateY(-8px) rotateX(-5px); }
-        }
+    .clock-box {
+      background: rgba(0,0,0,0.38);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-md);
+      padding: 18px 8px 14px;
+      text-align: center;
+      transition: border-color .3s, box-shadow .3s, transform .25s;
+    }
+    .clock-box:hover { transform: translateY(-4px); }
 
-        #finish-message { display: none; font-size: 1.8rem; font-weight: bold; color: #2ed573; text-shadow: 0 0 10px rgba(46, 213, 115, 0.5); margin-top: 20px; }
+    .clock-num {
+      font-family: var(--font-mono);
+      font-size: 3rem; font-weight: 700; line-height: 1;
+      transition: color .4s, text-shadow .4s;
+    }
+    .clock-lbl {
+      font-size: 9px; text-transform: uppercase; letter-spacing: 2.5px;
+      color: rgba(100,116,139,0.85);
+      margin-top: 10px; font-weight: 600;
+    }
 
-        /* Responsive di động */
-        @media (max-width: 650px) {
-            .countdown-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .main-container { padding: 30px 20px; width: 95%; }
-            h1 { font-size: 1.6rem; }
-            .university-brand { font-size: 0.8rem; }
-            .num { font-size: 2.8rem; }
-            .goodluck-text { font-size: 1.6rem; letter-spacing: 4px; }
-            .subject-tabs { flex-wrap: wrap; justify-content: center; border-radius: 20px; }
-            .tab-btn { padding: 8px 14px; font-size: 0.75rem; }
-        }
-    </style>
+    .theme-all  .clock-num { color: #34d399; text-shadow: 0 0 22px rgba(52,211,153,0.5); }
+    .theme-all  .clock-box:hover { border-color: rgba(52,211,153,0.28); box-shadow: 0 8px 24px rgba(52,211,153,0.1); }
+    .theme-toan .clock-num { color: #f87171; text-shadow: 0 0 22px rgba(248,113,113,0.5); }
+    .theme-toan .clock-box:hover { border-color: rgba(248,113,113,0.28); box-shadow: 0 8px 24px rgba(248,113,113,0.1); }
+    .theme-ly   .clock-num { color: #38bdf8; text-shadow: 0 0 22px rgba(56,189,248,0.5); }
+    .theme-ly   .clock-box:hover { border-color: rgba(56,189,248,0.28); box-shadow: 0 8px 24px rgba(56,189,248,0.1); }
+    .theme-hoa  .clock-num { color: #34d399; text-shadow: 0 0 22px rgba(52,211,153,0.5); }
+    .theme-hoa  .clock-box:hover { border-color: rgba(52,211,153,0.28); box-shadow: 0 8px 24px rgba(52,211,153,0.1); }
+    .theme-anh  .clock-num { color: #fbbf24; text-shadow: 0 0 22px rgba(251,191,36,0.5); }
+    .theme-anh  .clock-box:hover { border-color: rgba(251,191,36,0.28); box-shadow: 0 8px 24px rgba(251,191,36,0.1); }
+
+    .finish-msg {
+      display: none;
+      font-size: 1.3rem; font-weight: 700;
+      color: #34d399;
+      text-shadow: 0 0 14px rgba(52,211,153,0.5);
+      text-align: center;
+      padding: 24px 0;
+      margin-bottom: 22px;
+    }
+
+    /* =============================================
+       QUICK LINKS
+    ============================================= */
+    .links-row {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .link-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+      padding: 8px 16px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(203,213,225,0.8);
+      text-decoration: none;
+      transition: all .22s ease;
+    }
+    .link-btn:hover {
+      background: rgba(255,255,255,0.1); color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+    .link-btn.lk-web:hover   { border-color: rgba(56,189,248,0.55);  color: #38bdf8; }
+    .link-btn.lk-score:hover { border-color: rgba(52,211,153,0.55);  color: #34d399; }
+    .link-btn.lk-admit:hover { border-color: rgba(251,191,36,0.55);  color: #fbbf24; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    .divider {
+      width: 100%; max-width: 500px; height: 1px;
+      background: rgba(255,255,255,0.05);
+      margin: 18px 0;
+    }
+
+    .footer-row {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .gl-text {
+      font-family: var(--font-ui);
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg,#f87171,#818cf8,#34d399,#fbbf24,#f87171);
+      background-size: 300% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+    @keyframes shine { from { background-position: 0 center; } to { background-position: 300% center; } }
+
+    .author { font-size: 10px; color: var(--c-hint); letter-spacing: 1px; }
+    .author strong { color: rgba(203,213,225,0.75); font-weight: 600; }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 560px) {
+      .card { padding: 26px 16px 22px; }
+      .main-title { font-size: 1.2rem; }
+      .clock-num { font-size: 2.4rem; }
+      .clock-grid { gap: 8px; }
+      .tab { padding: 7px 11px; font-size: 10.5px; }
+    }
+    @media (max-width: 380px) {
+      .clock-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
-<body class="theme-all">
 
-    <canvas id="particles-canvas"></canvas>
+<body>
+  <div id="bg-img"></div>
+  <canvas id="bg-canvas"></canvas>
+  <div id="vignette"></div>
 
-    <div class="main-container" id="main-card">
-        
-        <!-- HỆ THỐNG TABS ĐƯỢC CẬP NHẬT -->
-        <div class="subject-tabs">
-            <button class="tab-btn active" data-mode="all">📝 Thủ Tục</button>
-            <button class="tab-btn" data-mode="toan">∫ Toán Học</button>
-            <button class="tab-btn" data-mode="ly">ψ Vật Lý</button>
-            <button class="tab-btn" data-mode="hoa">Δ Hóa Học</button>
-            <button class="tab-btn" data-mode="anh">🇬🇧 Tiếng Anh</button>
-        </div>
+  <div class="page">
+    <div class="card" id="card">
 
-        <h1 id="main-title">Đếm Ngược Kỳ Thi TN THPT 2026</h1>
-        <div class="university-brand">Trường ĐH KHOA HỌC TỰ NHIÊN - HCMUS</div>
-        <div class="target-date" id="target-date-view">Đang tính toán...</div>
+      <span class="badge-school">HCMUS — ĐH Khoa học Tự nhiên · ĐHQG-HCM</span>
+      <h1 class="main-title" id="main-title">Đếm ngược kỳ thi TN THPT 2026</h1>
+      <p class="subtitle">Khối A00 &amp; A01 &nbsp;·&nbsp; Võ Minh Triết</p>
 
-        <div class="countdown-grid" id="clock-grid">
-            <div class="time-box" id="days-box"><div class="num" id="txt-days">00</div><div class="label">Ngày</div></div>
-            <div class="time-box" id="hours-box"><div class="num" id="txt-hours">00</div><div class="label">Giờ</div></div>
-            <div class="time-box" id="minutes-box"><div class="num" id="txt-minutes">00</div><div class="label">Phút</div></div>
-            <div class="time-box" id="seconds-box"><div class="num" id="txt-seconds">00</div><div class="label">Giây</div></div>
-        </div>
+      <nav class="tabs" id="tabs">
+        <button class="tab a-all"  data-m="all" >📋 Thủ tục</button>
+        <button class="tab"        data-m="toan">∫ Toán</button>
+        <button class="tab"        data-m="ly"  >ψ Vật lý</button>
+        <button class="tab"        data-m="hoa" >Δ Hóa học</button>
+        <button class="tab"        data-m="anh" >🇬🇧 Tiếng Anh</button>
+      </nav>
 
-        <!-- THÔNG TIN TÁC GIẢ BẢN QUYỀN TINH TẾ -->
-        <div class="author-credits">
-            Web được phát triển bởi <span>Võ Minh Triết</span>
-        </div>
+      <div class="info-row">
+        <span class="info-dot" id="dot"></span>
+        <span class="info-chip" id="chip"></span>
+      </div>
 
-        <div class="goodluck-container">
-            <div class="goodluck-text">✨ Good Luck ✨</div>
-        </div>
+      <div class="prog-wrap">
+        <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+      </div>
 
-        <div id="finish-message">Thời gian đếm ngược đã kết thúc! Chúc các sĩ tử làm bài thật tốt! 🚀</div>
+      <div class="clock-grid" id="clock">
+        <div class="clock-box"><div class="clock-num" id="cd-d">00</div><div class="clock-lbl">Ngày</div></div>
+        <div class="clock-box"><div class="clock-num" id="cd-h">00</div><div class="clock-lbl">Giờ</div></div>
+        <div class="clock-box"><div class="clock-num" id="cd-m">00</div><div class="clock-lbl">Phút</div></div>
+        <div class="clock-box"><div class="clock-num" id="cd-s">00</div><div class="clock-lbl">Giây</div></div>
+      </div>
+      <div class="finish-msg" id="done">🎉 Đã đến giờ! Chúc bạn làm bài thật tốt! 🚀</div>
+
+      <div class="divider"></div>
+
+      <div class="links-row">
+        <a class="link-btn lk-web"   href="https://hcmus.edu.vn"                                            target="_blank" rel="noopener">🏛️ Website HCMUS</a>
+        <a class="link-btn lk-score" href="https://tuyensinh.hcmus.edu.vn/2025-diem-chuan-cac-phuong-thuc/" target="_blank" rel="noopener">📊 Điểm chuẩn 2025</a>
+        <a class="link-btn lk-admit" href="https://tuyensinh.hcmus.edu.vn"                                  target="_blank" rel="noopener">🎓 Tuyển sinh</a>
+      </div>
+
+      <div class="footer-row">
+        <span class="gl-text">✦ Good Luck ✦</span>
+        <span class="author">developed by <strong>Võ Minh Triết</strong></span>
+      </div>
+
     </div>
+  </div>
 
-    <script>
-        // --- CẤU HÌNH MỐC THỜI GIAN THI CHI TIẾT (Năm 2026) ---
-        const timeConfigs = {
-            all: { title: "Làm Thủ Tục Dự Thi", date: "2026-06-10T08:00:00", label: "Mốc thời gian check-in làm thủ tục tại phòng thi" },
-            toan: { title: "Thi Môn: Toán Học", date: "2026-06-11T14:30:00", label: "Thời gian tính giờ làm bài môn Toán" },
-            ly: { title: "Thi Môn: Vật Lý", date: "2026-06-12T07:35:00", label: "Thời gian phát đề môn Vật Lý (KHTN)" },
-            hoa: { title: "Thi Môn: Hóa Học", date: "2026-06-12T08:40:00", label: "Thời gian phát đề môn Hóa Học (KHTN)" },
-            anh: { title: "Thi Môn: Tiếng Anh", date: "2026-06-12T14:30:00", label: "Thời gian tính giờ làm bài môn Tiếng Anh" }
-        };
+  <script>
+    // =============================================
+    // LỊCH THI CHÍNH THỨC 2026 (Công văn 1257/BGDĐT-QLCL)
+    //
+    // 10/6 14:00 — Làm thủ tục (chiều)
+    // 11/6 14:30 — Toán · phát đề 14h20 · 90 phút
+    // 12/6 07:35 — Vật Lý · phát đề 07h30 · 50 phút · tự chọn 1
+    // 12/6 08:40 — Hóa học (A00) · phát đề 08h35 · 50 phút · tự chọn 2
+    // 12/6 08:40 — Tiếng Anh (A01) · phát đề 08h35 · 50 phút · tự chọn 2
+    // =============================================
+    const CFG = {
+      all:  { date: "2026-06-10T14:00:00", theme: "all",  dot: "#34d399", prog: "rgba(52,211,153,0.8)",
+              note: "Chiều <b>10/6/2026 — 14:00</b> &nbsp;·&nbsp; Thí sinh có mặt làm thủ tục, nghe phổ biến quy chế" },
+      toan: { date: "2026-06-11T14:30:00", theme: "toan", dot: "#f87171", prog: "rgba(248,113,113,0.8)",
+              note: "Chiều <b>11/6/2026 — 14:30</b> &nbsp;·&nbsp; Phát đề 14h20 &nbsp;·&nbsp; 90 phút &nbsp;·&nbsp; Khối A00 &amp; A01" },
+      ly:   { date: "2026-06-12T07:35:00", theme: "ly",   dot: "#38bdf8", prog: "rgba(56,189,248,0.8)",
+              note: "Sáng <b>12/6/2026 — 07:35</b> &nbsp;·&nbsp; Phát đề 07h30 &nbsp;·&nbsp; 50 phút &nbsp;·&nbsp; Môn tự chọn 1 · A00 &amp; A01" },
+      hoa:  { date: "2026-06-12T08:40:00", theme: "hoa",  dot: "#34d399", prog: "rgba(52,211,153,0.8)",
+              note: "Sáng <b>12/6/2026 — 08:40</b> &nbsp;·&nbsp; Phát đề 08h35 &nbsp;·&nbsp; 50 phút &nbsp;·&nbsp; Môn tự chọn 2 · Khối A00" },
+      anh:  { date: "2026-06-12T08:40:00", theme: "anh",  dot: "#fbbf24", prog: "rgba(251,191,36,0.8)",
+              note: "Sáng <b>12/6/2026 — 08:40</b> &nbsp;·&nbsp; Phát đề 08h35 &nbsp;·&nbsp; 50 phút &nbsp;·&nbsp; Môn tự chọn 2 · Khối A01" }
+    };
 
-        let currentMode = "all";
-        let intervalId = null;
+    const START = new Date("2026-01-01T00:00:00").getTime();
+    let cur = "all", timer = null;
+    const pad = n => n < 10 ? "0" + n : String(n);
 
-        // Xử lý đếm lùi thời gian động
-        function updateClock() {
-            const now = new Date().getTime();
-            const targetTime = new Date(timeConfigs[currentMode].date).getTime();
-            const diff = targetTime - now;
+    function tick() {
+      const c    = CFG[cur];
+      const now  = Date.now();
+      const end  = new Date(c.date).getTime();
+      const diff = end - now;
 
-            if (diff <= 0) {
-                document.getElementById("clock-grid").style.display = "none";
-                document.getElementById("finish-message").style.display = "block";
-                document.getElementById("txt-days").innerText = "00";
-                document.getElementById("txt-hours").innerText = "00";
-                document.getElementById("txt-minutes").innerText = "00";
-                document.getElementById("txt-seconds").innerText = "00";
-                return;
-            }
+      if (diff <= 0) {
+        document.getElementById("clock").style.display = "none";
+        document.getElementById("done").style.display  = "block";
+        document.getElementById("prog").style.width    = "100%";
+        return;
+      }
+      document.getElementById("clock").style.display = "grid";
+      document.getElementById("done").style.display  = "none";
 
-            document.getElementById("clock-grid").style.display = "flex";
-            document.getElementById("finish-message").style.display = "none";
+      const pct = Math.min(100, Math.max(0, ((end - START - diff) / (end - START)) * 100));
+      document.getElementById("prog").style.width = pct.toFixed(3) + "%";
 
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById("cd-d").textContent = pad(Math.floor(diff / 86400000));
+      document.getElementById("cd-h").textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      document.getElementById("cd-m").textContent = pad(Math.floor((diff % 3600000) / 60000));
+      document.getElementById("cd-s").textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
 
-            document.getElementById("txt-days").innerText = d < 10 ? "0" + d : d;
-            document.getElementById("txt-hours").innerText = h < 10 ? "0" + h : h;
-            document.getElementById("txt-minutes").innerText = m < 10 ? "0" + m : m;
-            document.getElementById("txt-seconds").innerText = s < 10 ? "0" + s : s;
-        }
+    function setMode(m) {
+      cur = m;
+      const c = CFG[m];
+      document.getElementById("card").className        = "card theme-" + c.theme;
+      document.getElementById("dot").style.background  = c.dot;
+      document.getElementById("chip").innerHTML         = c.note;
+      document.getElementById("prog").style.background = c.prog;
+      document.querySelectorAll(".tab").forEach(b => {
+        b.className = b.dataset.m === m ? "tab a-" + c.theme : "tab";
+      });
+      clearInterval(timer);
+      tick();
+      timer = setInterval(tick, 1000);
+    }
 
-        // Đổi Tab môn học và cập nhật Theme màu sắc hạt nền
-        function switchMode(mode) {
-            currentMode = mode;
-            
-            // Đổi class của body để đổi màu CSS neon tương ứng
-            document.body.className = `theme-${mode}`;
+    document.getElementById("tabs").addEventListener("click", e => {
+      const b = e.target.closest(".tab");
+      if (b) setMode(b.dataset.m);
+    });
 
-            // Cập nhật chữ tiêu đề và mốc thời gian hiển thị ngoài màn hình
-            const config = timeConfigs[mode];
-            document.getElementById("main-title").innerText = config.title;
-            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            document.getElementById("target-date-view").innerText = `${config.label}: ${new Date(config.date).toLocaleDateString('vi-VN', dateOptions)}`;
+    setMode("all");
 
-            // Reset và chạy lại đồng hồ đếm
-            clearInterval(intervalId);
-            updateClock();
-            intervalId = setInterval(updateClock, 1000);
-        }
+    // ---- Particles ----
+    const CV  = document.getElementById("bg-canvas");
+    const CTX = CV.getContext("2d");
+    const P_COL = { all:"52,211,153", toan:"248,113,113", ly:"56,189,248", hoa:"52,211,153", anh:"251,191,36" };
 
-        // Lắng nghe sự kiện click trên các nút Tab
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                switchMode(this.getAttribute('data-mode'));
-            });
-        });
+    function resizeCV() { CV.width = window.innerWidth; CV.height = window.innerHeight; }
+    resizeCV();
+    window.addEventListener("resize", resizeCV);
 
-        // Khởi động chạy mặc định tab Thủ Tục
-        switchMode("all");
+    const pts = Array.from({ length: 75 }, () => ({
+      x: Math.random() * innerWidth,  y: Math.random() * innerHeight,
+      r: Math.random() * 1.8 + 0.5,
+      vx: (Math.random() - .5) * .45, vy: (Math.random() - .5) * .45,
+      a: Math.random() * .3 + .1
+    }));
 
-
-        // --- THUẬT TOÁN HẠT BAY ĐỔI MÀU THEO MÔN ---
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        const numberOfParticles = 65;
-
-        function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        initCanvas();
-        window.addEventListener('resize', initCanvas);
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 1;
-                this.speedX = Math.random() * 0.6 - 0.3;
-                this.speedY = Math.random() * 0.6 - 0.3;
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                // Chỉ định màu sắc hạt thay đổi linh hoạt dựa theo tab được chọn
-                if (currentMode === "all") ctx.fillStyle = `rgba(0, 206, 166, ${Math.random() * 0.4 + 0.3})`;
-                else if (currentMode === "toan") ctx.fillStyle = `rgba(255, 71, 87, ${Math.random() * 0.4 + 0.3})`;
-                else if (currentMode === "ly") ctx.fillStyle = `rgba(30, 144, 255, ${Math.random() * 0.4 + 0.3})`;
-                else if (currentMode === "hoa") ctx.fillStyle = `rgba(46, 213, 115, ${Math.random() * 0.4 + 0.3})`;
-                else if (currentMode === "anh") ctx.fillStyle = `rgba(255, 165, 0, ${Math.random() * 0.4 + 0.3})`;
-
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function startParticles() {
-            particlesArray = [];
-            for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); }
-        }
-        startParticles();
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
+    (function loop() {
+      CTX.clearRect(0, 0, CV.width, CV.height);
+      const col = P_COL[cur] || "52,211,153";
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > CV.width)  { p.x = Math.random() * CV.width;  p.vx *= -1; }
+        if (p.y < 0 || p.y > CV.height) { p.y = Math.random() * CV.height; p.vy *= -1; }
+        CTX.beginPath();
+        CTX.arc(p.x, p.y, p.r, 0, 6.283);
+        CTX.fillStyle = `rgba(${col},${p.a})`;
+        CTX.fill();
+      });
+      requestAnimationFrame(loop);
+    })();
+  </script>
 </body>
 </html>
