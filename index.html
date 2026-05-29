@@ -157,10 +157,28 @@ h1 {
   <h1>🎓 Countdown THPT Quốc Gia 2026</h1>
 
   <div class="card">
-    <h2>📘 Kỳ thi THPTQG</h2>
+    <h2>📘 Kỳ thi THPTQG (2k8)</h2>
     <div class="timer" id="thptTimer"></div>
     <div class="note">
-      Dự kiến: <b>26/06/2026</b>
+      Dự kiến khai mạc: <b>11/06/2026</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📐 Môn Toán</h2>
+    <div class="timer" id="mathTimer"></div>
+    <div class="note">
+      Chiều <b>11/06/2026</b><br>
+      Phát đề 14:20 · 90 phút
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚡ Môn Vật Lý</h2>
+    <div class="timer" id="physTimer"></div>
+    <div class="note">
+      Sáng <b>12/06/2026</b><br>
+      Phát đề 07:30 · 50 phút
     </div>
   </div>
 
@@ -168,8 +186,8 @@ h1 {
     <h2>🔤 Môn Tiếng Anh</h2>
     <div class="timer" id="engTimer"></div>
     <div class="note">
-      Sáng <b>12/06/2026 — 08:40</b><br>
-      Phát đề 08:35 · 50 phút
+      Chiều <b>12/06/2026</b> (Dự kiến)<br>
+      Phát đề 14:20 · 50 phút
     </div>
   </div>
 
@@ -219,14 +237,28 @@ function createTimer(id, targetDate) {
   setInterval(update, 1000);
 }
 
+// Lịch chung THPTQG
 createTimer(
   "thptTimer",
-  new Date("2026-06-26T07:00:00")
+  new Date("2026-06-11T07:00:00")
 );
 
+// Toán (Chiều 11/06 - 14:30 bắt đầu làm bài)
+createTimer(
+  "mathTimer",
+  new Date("2026-06-11T14:30:00")
+);
+
+// Lý (Sáng 12/06 - 07:35 bắt đầu làm bài)
+createTimer(
+  "physTimer",
+  new Date("2026-06-12T07:35:00")
+);
+
+// Tiếng Anh (Chiều 12/06 - 14:30 bắt đầu làm bài)
 createTimer(
   "engTimer",
-  new Date("2026-06-12T08:40:00")
+  new Date("2026-06-12T14:30:00")
 );
 </script>
 
