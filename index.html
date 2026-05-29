@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đếm Ngược Khối A PRO - Siêu VIP</title>
+    <title>Đếm Ngược Tốt Nghiệp THPT 2026 - Võ Minh Triết</title>
     <style>
         /* --- GIAO DIỆN & HIỆU ỨNG HI-TECH --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -32,7 +32,7 @@
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 168, 255, 0.15);
-            max-width: 750px; width: 100%;
+            max-width: 780px; width: 100%;
             transition: all 0.5s ease;
         }
 
@@ -48,24 +48,37 @@
         }
         .tab-btn {
             font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;
-            padding: 10px 22px; border-radius: 50px; cursor: pointer;
+            padding: 10px 20px; border-radius: 50px; cursor: pointer;
             text-transform: uppercase; border: none; background: transparent;
             color: #85929e; transition: all 0.3s ease;
         }
         
-        /* Trạng thái Active (Đang chọn) của từng môn */
-        .tab-btn.active[data-mode="all"] { background: rgba(255,255,255,0.15); color: #fff; text-shadow: 0 0 10px #fff; }
+        /* Trạng thái Active của từng môn */
+        .tab-btn.active[data-mode="all"] { background: rgba(0, 206, 166, 0.25); color: #00cea6; text-shadow: 0 0 10px #00cea6; }
         .tab-btn.active[data-mode="toan"] { background: rgba(255, 71, 87, 0.25); color: #ff4757; text-shadow: 0 0 10px #ff4757; }
         .tab-btn.active[data-mode="ly"] { background: rgba(30, 144, 255, 0.25); color: #1e90ff; text-shadow: 0 0 10px #1e90ff; }
         .tab-btn.active[data-mode="hoa"] { background: rgba(46, 213, 115, 0.25); color: #2ed573; text-shadow: 0 0 10px #2ed573; }
+        .tab-btn.active[data-mode="anh"] { background: rgba(255, 165, 0, 0.25); color: #ffa500; text-shadow: 0 0 10px #ffa500; }
 
-        h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; transition: all 0.5s ease; }
+        h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; transition: all 0.5s ease; }
         
-        /* Màu chữ tiêu đề thay đổi động theo tab */
-        theme-all h1 { background: linear-gradient(45deg, #00cea6, #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* Màu chữ tiêu đề thay đổi động theo từng tab */
+        .theme-all h1 { background: linear-gradient(45deg, #00cea6, #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .theme-toan h1 { background: linear-gradient(45deg, #ff6b81, #ff4757); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .theme-ly h1 { background: linear-gradient(45deg, #70a1ff, #1e90ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .theme-hoa h1 { background: linear-gradient(45deg, #7bed9f, #2ed573); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-anh h1 { background: linear-gradient(45deg, #ffdf00, #ffa500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Khung trường Đại học tinh tế */
+        .university-brand {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #00a8ff;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
+        }
 
         .target-date { font-size: 0.95rem; color: #a4b0be; margin-bottom: 35px; font-style: italic; transition: all 0.3s; }
 
@@ -78,10 +91,8 @@
         .label { font-size: 0.75rem; color: #85929e; text-transform: uppercase; letter-spacing: 2px; margin-top: 12px; display: block; }
 
         /* Đổ màu NEON ĐỘNG cho các ô số dựa theo Tab đang chọn */
-        .theme-all #days-box .num { color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
-        .theme-all #hours-box .num { color: #00a8ff; text-shadow: 0 0 15px rgba(0, 168, 255, 0.6); }
-        .theme-all #minutes-box .num { color: #9b59b6; text-shadow: 0 0 15px rgba(155, 89, 182, 0.6); }
-        .theme-all #seconds-box .num { color: #e74c3c; text-shadow: 0 0 15px rgba(231, 76, 60, 0.6); }
+        .theme-all .num { color: #00ffcc !important; text-shadow: 0 0 20px rgba(0, 255, 204, 0.6) !important; }
+        .theme-all .time-box:hover { border-color: rgba(0, 255, 204, 0.4); box-shadow: 0 10px 20px rgba(0, 255, 204, 0.15); }
 
         .theme-toan .num { color: #ff4757 !important; text-shadow: 0 0 20px rgba(255, 71, 87, 0.7) !important; }
         .theme-toan .time-box:hover { border-color: rgba(255, 71, 87, 0.4); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.15); }
@@ -92,9 +103,25 @@
         .theme-hoa .num { color: #2ed573 !important; text-shadow: 0 0 20px rgba(46, 213, 115, 0.7) !important; }
         .theme-hoa .time-box:hover { border-color: rgba(46, 213, 115, 0.4); box-shadow: 0 10px 20px rgba(46, 213, 115, 0.15); }
 
+        .theme-anh .num { color: #ffa500 !important; text-shadow: 0 0 20px rgba(255, 165, 0, 0.7) !important; }
+        .theme-anh .time-box:hover { border-color: rgba(255, 165, 0, 0.4); box-shadow: 0 10px 20px rgba(255, 165, 0, 0.15); }
+
+        /* Thông tin bản quyền tác giả */
+        .author-credits {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            letter-spacing: 1px;
+        }
+        .author-credits span {
+            color: #ffffff;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
         /* --- HIỆU ỨNG CHỮ GOOD LUCK ĐẲNG CẤP --- */
         .goodluck-container {
-            margin-top: 35px;
+            margin-top: 25px;
             perspective: 500px;
         }
         .goodluck-text {
@@ -103,7 +130,7 @@
             text-transform: uppercase;
             letter-spacing: 6px;
             display: inline-block;
-            background: linear-gradient(to right, #ff4757, #1e90ff, #2ed573, #ff4757);
+            background: linear-gradient(to right, #ff4757, #1e90ff, #2ed573, #ffa500, #ff4757);
             background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -126,7 +153,8 @@
         @media (max-width: 650px) {
             .countdown-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .main-container { padding: 30px 20px; width: 95%; }
-            h1 { font-size: 1.5rem; }
+            h1 { font-size: 1.6rem; }
+            .university-brand { font-size: 0.8rem; }
             .num { font-size: 2.8rem; }
             .goodluck-text { font-size: 1.6rem; letter-spacing: 4px; }
             .subject-tabs { flex-wrap: wrap; justify-content: center; border-radius: 20px; }
@@ -140,14 +168,17 @@
 
     <div class="main-container" id="main-card">
         
+        <!-- HỆ THỐNG TABS ĐƯỢC CẬP NHẬT -->
         <div class="subject-tabs">
-            <button class="tab-btn active" data-mode="all">Tổng quan</button>
+            <button class="tab-btn active" data-mode="all">📝 Thủ Tục</button>
             <button class="tab-btn" data-mode="toan">∫ Toán Học</button>
             <button class="tab-btn" data-mode="ly">ψ Vật Lý</button>
             <button class="tab-btn" data-mode="hoa">Δ Hóa Học</button>
+            <button class="tab-btn" data-mode="anh">🇬🇧 Tiếng Anh</button>
         </div>
 
-        <h1 id="main-title">Đếm Ngược Kỳ Thi TN THPT</h1>
+        <h1 id="main-title">Đếm Ngược Kỳ Thi TN THPT 2026</h1>
+        <div class="university-brand">Trường ĐH KHOA HỌC TỰ NHIÊN - HCMUS</div>
         <div class="target-date" id="target-date-view">Đang tính toán...</div>
 
         <div class="countdown-grid" id="clock-grid">
@@ -157,20 +188,26 @@
             <div class="time-box" id="seconds-box"><div class="num" id="txt-seconds">00</div><div class="label">Giây</div></div>
         </div>
 
+        <!-- THÔNG TIN TÁC GIẢ BẢN QUYỀN TINH TẾ -->
+        <div class="author-credits">
+            Web được phát triển bởi <span>Võ Minh Triết</span>
+        </div>
+
         <div class="goodluck-container">
             <div class="goodluck-text">✨ Good Luck ✨</div>
         </div>
 
-        <div id="finish-message">Môn học đã bắt đầu thi! Chúc các sĩ tử làm bài thật tốt! 🚀</div>
+        <div id="finish-message">Thời gian đếm ngược đã kết thúc! Chúc các sĩ tử làm bài thật tốt! 🚀</div>
     </div>
 
     <script>
         // --- CẤU HÌNH MỐC THỜI GIAN THI CHI TIẾT (Năm 2026) ---
         const timeConfigs = {
-            all: { title: "Kỳ Thi TN THPT 2026", date: "2026-06-25T07:30:00", label: "Mốc khai mạc kỳ thi" },
-            toan: { title: "Thi Môn: Toán Học", date: "2026-06-25T14:30:00", label: "Thời gian tính giờ làm bài môn Toán" },
-            ly: { title: "Thi Môn: Vật Lý", date: "2026-06-26T07:35:00", label: "Thời gian phát đề môn Vật Lý (KHTN)" },
-            hoa: { title: "Thi Môn: Hóa Học", date: "2026-06-26T08:40:00", label: "Thời gian phát đề môn Hóa Học (KHTN)" }
+            all: { title: "Làm Thủ Tục Dự Thi", date: "2026-06-10T08:00:00", label: "Mốc thời gian check-in làm thủ tục tại phòng thi" },
+            toan: { title: "Thi Môn: Toán Học", date: "2026-06-11T14:30:00", label: "Thời gian tính giờ làm bài môn Toán" },
+            ly: { title: "Thi Môn: Vật Lý", date: "2026-06-12T07:35:00", label: "Thời gian phát đề môn Vật Lý (KHTN)" },
+            hoa: { title: "Thi Môn: Hóa Học", date: "2026-06-12T08:40:00", label: "Thời gian phát đề môn Hóa Học (KHTN)" },
+            anh: { title: "Thi Môn: Tiếng Anh", date: "2026-06-12T14:30:00", label: "Thời gian tính giờ làm bài môn Tiếng Anh" }
         };
 
         let currentMode = "all";
@@ -234,7 +271,7 @@
             });
         });
 
-        // Khởi động chạy mặc định tab Tổng quan
+        // Khởi động chạy mặc định tab Thủ Tục
         switchMode("all");
 
 
@@ -263,10 +300,11 @@
             }
             draw() {
                 // Chỉ định màu sắc hạt thay đổi linh hoạt dựa theo tab được chọn
-                if (currentMode === "all") ctx.fillStyle = `rgba(100, ${Math.floor(Math.random()*100 + 155)}, 255, 0.4)`;
+                if (currentMode === "all") ctx.fillStyle = `rgba(0, 206, 166, ${Math.random() * 0.4 + 0.3})`;
                 else if (currentMode === "toan") ctx.fillStyle = `rgba(255, 71, 87, ${Math.random() * 0.4 + 0.3})`;
                 else if (currentMode === "ly") ctx.fillStyle = `rgba(30, 144, 255, ${Math.random() * 0.4 + 0.3})`;
                 else if (currentMode === "hoa") ctx.fillStyle = `rgba(46, 213, 115, ${Math.random() * 0.4 + 0.3})`;
+                else if (currentMode === "anh") ctx.fillStyle = `rgba(255, 165, 0, ${Math.random() * 0.4 + 0.3})`;
 
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
