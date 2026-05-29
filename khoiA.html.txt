@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm Ngược Khối A PRO - Siêu VIP</title>
+    <style>
+        /* --- GIAO DIỆN & HIỆU ỨNG HI-TECH --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #060810 url('https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?q=80&w=1920') no-repeat center center/cover;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 8, 16, 0.8); z-index: 1;
+        }
+
+        #particles-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+        /* Hộp kính mờ siêu VIP */
+        .main-container {
+            position: relative; z-index: 3; text-align: center;
+            background: rgba(255, 255, 255, 0.03); padding: 45px 40px; border-radius: 30px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 168, 255, 0.15);
+            max-width: 750px; width: 100%;
+            transition: all 0.5s ease;
+        }
+
+        /* Thanh tương tác chọn môn học (Tabs) */
+        .subject-tabs {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 5px;
+        }
+        .tab-btn {
+            font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;
+            padding: 10px 22px; border-radius: 50px; cursor: pointer;
+            text-transform: uppercase; border: none; background: transparent;
+            color: #85929e; transition: all 0.3s ease;
+        }
+        
+        /* Trạng thái Active (Đang chọn) của từng môn */
+        .tab-btn.active[data-mode="all"] { background: rgba(255,255,255,0.15); color: #fff; text-shadow: 0 0 10px #fff; }
+        .tab-btn.active[data-mode="toan"] { background: rgba(255, 71, 87, 0.25); color: #ff4757; text-shadow: 0 0 10px #ff4757; }
+        .tab-btn.active[data-mode="ly"] { background: rgba(30, 144, 255, 0.25); color: #1e90ff; text-shadow: 0 0 10px #1e90ff; }
+        .tab-btn.active[data-mode="hoa"] { background: rgba(46, 213, 115, 0.25); color: #2ed573; text-shadow: 0 0 10px #2ed573; }
+
+        h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; transition: all 0.5s ease; }
+        
+        /* Màu chữ tiêu đề thay đổi động theo tab */
+        theme-all h1 { background: linear-gradient(45deg, #00cea6, #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-toan h1 { background: linear-gradient(45deg, #ff6b81, #ff4757); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-ly h1 { background: linear-gradient(45deg, #70a1ff, #1e90ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .theme-hoa h1 { background: linear-gradient(45deg, #7bed9f, #2ed573); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .target-date { font-size: 0.95rem; color: #a4b0be; margin-bottom: 35px; font-style: italic; transition: all 0.3s; }
+
+        /* Khung lưới đồng hồ */
+        .countdown-grid { display: flex; justify-content: space-between; gap: 20px; }
+        .time-box { flex: 1; background: rgba(0, 0, 0, 0.45); padding: 25px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.03); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
+        .time-box:hover { transform: translateY(-5px); }
+
+        .num { font-size: 3.8rem; font-weight: 700; font-family: 'Courier New', monospace; line-height: 1; transition: all 0.5s ease; }
+        .label { font-size: 0.75rem; color: #85929e; text-transform: uppercase; letter-spacing: 2px; margin-top: 12px; display: block; }
+
+        /* Đổ màu NEON ĐỘNG cho các ô số dựa theo Tab đang chọn */
+        .theme-all #days-box .num { color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
+        .theme-all #hours-box .num { color: #00a8ff; text-shadow: 0 0 15px rgba(0, 168, 255, 0.6); }
+        .theme-all #minutes-box .num { color: #9b59b6; text-shadow: 0 0 15px rgba(155, 89, 182, 0.6); }
+        .theme-all #seconds-box .num { color: #e74c3c; text-shadow: 0 0 15px rgba(231, 76, 60, 0.6); }
+
+        .theme-toan .num { color: #ff4757 !important; text-shadow: 0 0 20px rgba(255, 71, 87, 0.7) !important; }
+        .theme-toan .time-box:hover { border-color: rgba(255, 71, 87, 0.4); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.15); }
+
+        .theme-ly .num { color: #1e90ff !important; text-shadow: 0 0 20px rgba(30, 144, 255, 0.7) !important; }
+        .theme-ly .time-box:hover { border-color: rgba(30, 144, 255, 0.4); box-shadow: 0 10px 20px rgba(30, 144, 255, 0.15); }
+
+        .theme-hoa .num { color: #2ed573 !important; text-shadow: 0 0 20px rgba(46, 213, 115, 0.7) !important; }
+        .theme-hoa .time-box:hover { border-color: rgba(46, 213, 115, 0.4); box-shadow: 0 10px 20px rgba(46, 213, 115, 0.15); }
+
+        /* --- HIỆU ỨNG CHỮ GOOD LUCK ĐẲNG CẤP --- */
+        .goodluck-container {
+            margin-top: 35px;
+            perspective: 500px;
+        }
+        .goodluck-text {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            display: inline-block;
+            background: linear-gradient(to right, #ff4757, #1e90ff, #2ed573, #ff4757);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 4s linear infinite, floating 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(30, 144, 255, 0.6));
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0) rotateX(5px); }
+            50% { transform: translateY(-8px) rotateX(-5px); }
+        }
+
+        #finish-message { display: none; font-size: 1.8rem; font-weight: bold; color: #2ed573; text-shadow: 0 0 10px rgba(46, 213, 115, 0.5); margin-top: 20px; }
+
+        /* Responsive di động */
+        @media (max-width: 650px) {
+            .countdown-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .main-container { padding: 30px 20px; width: 95%; }
+            h1 { font-size: 1.5rem; }
+            .num { font-size: 2.8rem; }
+            .goodluck-text { font-size: 1.6rem; letter-spacing: 4px; }
+            .subject-tabs { flex-wrap: wrap; justify-content: center; border-radius: 20px; }
+            .tab-btn { padding: 8px 14px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body class="theme-all">
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="main-container" id="main-card">
+        
+        <div class="subject-tabs">
+            <button class="tab-btn active" data-mode="all">Tổng quan</button>
+            <button class="tab-btn" data-mode="toan">∫ Toán Học</button>
+            <button class="tab-btn" data-mode="ly">ψ Vật Lý</button>
+            <button class="tab-btn" data-mode="hoa">Δ Hóa Học</button>
+        </div>
+
+        <h1 id="main-title">Đếm Ngược Kỳ Thi TN THPT</h1>
+        <div class="target-date" id="target-date-view">Đang tính toán...</div>
+
+        <div class="countdown-grid" id="clock-grid">
+            <div class="time-box" id="days-box"><div class="num" id="txt-days">00</div><div class="label">Ngày</div></div>
+            <div class="time-box" id="hours-box"><div class="num" id="txt-hours">00</div><div class="label">Giờ</div></div>
+            <div class="time-box" id="minutes-box"><div class="num" id="txt-minutes">00</div><div class="label">Phút</div></div>
+            <div class="time-box" id="seconds-box"><div class="num" id="txt-seconds">00</div><div class="label">Giây</div></div>
+        </div>
+
+        <div class="goodluck-container">
+            <div class="goodluck-text">✨ Good Luck ✨</div>
+        </div>
+
+        <div id="finish-message">Môn học đã bắt đầu thi! Chúc các sĩ tử làm bài thật tốt! 🚀</div>
+    </div>
+
+    <script>
+        // --- CẤU HÌNH MỐC THỜI GIAN THI CHI TIẾT (Năm 2026) ---
+        const timeConfigs = {
+            all: { title: "Kỳ Thi TN THPT 2026", date: "2026-06-25T07:30:00", label: "Mốc khai mạc kỳ thi" },
+            toan: { title: "Thi Môn: Toán Học", date: "2026-06-25T14:30:00", label: "Thời gian tính giờ làm bài môn Toán" },
+            ly: { title: "Thi Môn: Vật Lý", date: "2026-06-26T07:35:00", label: "Thời gian phát đề môn Vật Lý (KHTN)" },
+            hoa: { title: "Thi Môn: Hóa Học", date: "2026-06-26T08:40:00", label: "Thời gian phát đề môn Hóa Học (KHTN)" }
+        };
+
+        let currentMode = "all";
+        let intervalId = null;
+
+        // Xử lý đếm lùi thời gian động
+        function updateClock() {
+            const now = new Date().getTime();
+            const targetTime = new Date(timeConfigs[currentMode].date).getTime();
+            const diff = targetTime - now;
+
+            if (diff <= 0) {
+                document.getElementById("clock-grid").style.display = "none";
+                document.getElementById("finish-message").style.display = "block";
+                document.getElementById("txt-days").innerText = "00";
+                document.getElementById("txt-hours").innerText = "00";
+                document.getElementById("txt-minutes").innerText = "00";
+                document.getElementById("txt-seconds").innerText = "00";
+                return;
+            }
+
+            document.getElementById("clock-grid").style.display = "flex";
+            document.getElementById("finish-message").style.display = "none";
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("txt-days").innerText = d < 10 ? "0" + d : d;
+            document.getElementById("txt-hours").innerText = h < 10 ? "0" + h : h;
+            document.getElementById("txt-minutes").innerText = m < 10 ? "0" + m : m;
+            document.getElementById("txt-seconds").innerText = s < 10 ? "0" + s : s;
+        }
+
+        // Đổi Tab môn học và cập nhật Theme màu sắc hạt nền
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Đổi class của body để đổi màu CSS neon tương ứng
+            document.body.className = `theme-${mode}`;
+
+            // Cập nhật chữ tiêu đề và mốc thời gian hiển thị ngoài màn hình
+            const config = timeConfigs[mode];
+            document.getElementById("main-title").innerText = config.title;
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById("target-date-view").innerText = `${config.label}: ${new Date(config.date).toLocaleDateString('vi-VN', dateOptions)}`;
+
+            // Reset và chạy lại đồng hồ đếm
+            clearInterval(intervalId);
+            updateClock();
+            intervalId = setInterval(updateClock, 1000);
+        }
+
+        // Lắng nghe sự kiện click trên các nút Tab
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                switchMode(this.getAttribute('data-mode'));
+            });
+        });
+
+        // Khởi động chạy mặc định tab Tổng quan
+        switchMode("all");
+
+
+        // --- THUẬT TOÁN HẠT BAY ĐỔI MÀU THEO MÔN ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        const numberOfParticles = 65;
+
+        function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        initCanvas();
+        window.addEventListener('resize', initCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 1;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.speedY = Math.random() * 0.6 - 0.3;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                // Chỉ định màu sắc hạt thay đổi linh hoạt dựa theo tab được chọn
+                if (currentMode === "all") ctx.fillStyle = `rgba(100, ${Math.floor(Math.random()*100 + 155)}, 255, 0.4)`;
+                else if (currentMode === "toan") ctx.fillStyle = `rgba(255, 71, 87, ${Math.random() * 0.4 + 0.3})`;
+                else if (currentMode === "ly") ctx.fillStyle = `rgba(30, 144, 255, ${Math.random() * 0.4 + 0.3})`;
+                else if (currentMode === "hoa") ctx.fillStyle = `rgba(46, 213, 115, ${Math.random() * 0.4 + 0.3})`;
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function startParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); }
+        }
+        startParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
