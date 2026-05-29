@@ -6,111 +6,145 @@
 <title>Countdown THPT Quốc Gia 2026</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-body{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#071428,#0b2447,#19376d);
-  color:white;
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #071428, #0b2447, #19376d);
+  color: white;
+  padding: 20px; 
 }
 
-.container{
-  width:90%;
-  max-width:760px;
-  background:rgba(255,255,255,0.08);
-  border-radius:28px;
-  padding:32px;
-  box-shadow:0 10px 40px rgba(0,0,0,.35);
+.container {
+  width: 100%;
+  max-width: 760px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  margin: auto; 
 }
 
-h1{
-  text-align:center;
-  font-size:42px;
-  margin-bottom:28px;
+h1 {
+  text-align: center;
+  font-size: 42px;
+  margin-bottom: 28px;
 }
 
-.card{
-  background:rgba(255,255,255,.07);
-  padding:28px;
-  border-radius:22px;
-  margin-bottom:24px;
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  padding: 28px;
+  border-radius: 22px;
+  margin-bottom: 24px;
 }
 
-.card h2{
-  margin-bottom:18px;
-  font-size:24px;
+.card h2 {
+  margin-bottom: 18px;
+  font-size: 24px;
 }
 
-.timer{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
+.timer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
 
-.box{
-  background:rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:22px;
-  text-align:center;
+.box {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
 }
 
-.num{
-  font-size:44px;
-  font-weight:bold;
+.num {
+  font-size: 44px;
+  font-weight: bold;
 }
 
-.txt{
-  font-size:15px;
-  opacity:.9;
+.txt {
+  font-size: 15px;
+  opacity: 0.9;
 }
 
-.note{
-  margin-top:16px;
-  font-size:15px;
-  opacity:.9;
-  line-height:1.6;
+.note {
+  margin-top: 16px;
+  font-size: 15px;
+  opacity: 0.9;
+  line-height: 1.6;
 }
 
-.links-row{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:14px;
-  margin-top:14px;
+.links-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
 }
 
-.link-btn{
-  color:white;
-  text-decoration:none;
-  padding:14px 22px;
-  border-radius:14px;
-  font-weight:bold;
-  transition:0.2s;
+.link-btn {
+  color: white;
+  text-decoration: none;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-weight: bold;
+  transition: 0.2s;
+  text-align: center;
 }
 
-.link-btn:hover{
-  transform:translateY(-2px);
+.link-btn:hover {
+  transform: translateY(-2px);
 }
 
-.lk-web{ background:#2563eb; }
-.lk-score{ background:#16a34a; }
-.lk-admit{ background:#9333ea; }
+.lk-web { background: #2563eb; }
+.lk-score { background: #16a34a; }
+.lk-admit { background: #9333ea; }
 
-@media(max-width:700px){
-  .timer{
-    grid-template-columns:repeat(2,1fr);
+@media (max-width: 700px) {
+  body {
+    align-items: flex-start; 
   }
 
-  h1{
-    font-size:30px;
+  .container {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  h1 {
+    font-size: 28px; 
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .timer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .box {
+    padding: 16px; 
+  }
+
+  .num {
+    font-size: 32px; 
+  }
+
+  .links-row {
+    flex-direction: column; 
+  }
+
+  .link-btn {
+    width: 100%; 
   }
 }
 </style>
@@ -120,82 +154,69 @@ h1{
 
 <div class="container">
 
-<h1>🎓 Countdown THPT Quốc Gia 2026</h1>
+  <h1>🎓 Countdown THPT Quốc Gia 2026</h1>
 
-<div class="card">
-  <h2>📘 Kỳ thi THPTQG</h2>
-  <div class="timer" id="thptTimer"></div>
-  <div class="note">
-    Dự kiến: <b>26/06/2026</b>
+  <div class="card">
+    <h2>📘 Kỳ thi THPTQG</h2>
+    <div class="timer" id="thptTimer"></div>
+    <div class="note">
+      Dự kiến: <b>26/06/2026</b>
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <h2>🔤 Môn Tiếng Anh</h2>
-  <div class="timer" id="engTimer"></div>
-  <div class="note">
-    Sáng <b>12/06/2026 — 08:40</b><br>
-    Phát đề 08:35 · 50 phút
+  <div class="card">
+    <h2>🔤 Môn Tiếng Anh</h2>
+    <div class="timer" id="engTimer"></div>
+    <div class="note">
+      Sáng <b>12/06/2026 — 08:40</b><br>
+      Phát đề 08:35 · 50 phút
+    </div>
   </div>
-</div>
 
-<div class="links-row">
-
-<a class="link-btn lk-web"
-href="https://hcmus.edu.vn"
-target="_blank">
-🏛️ HCMUS
-</a>
-
-<a class="link-btn lk-score"
-href="https://tuyensinh.hcmus.edu.vn"
-target="_blank">
-📘 Tuyển sinh
-</a>
-
-<a class="link-btn lk-score"
-href="https://tuyensinh.hcmus.edu.vn/2025-diem-chuan-cac-phuong-thuc/"
-target="_blank">
-📊 Điểm chuẩn
-</a>
-
-<a class="link-btn lk-admit"
-href="https://tuyensinh.hcmus.edu.vn/de-an-tuyen-sinh/"
-target="_blank">
-🎓 Đề án tuyển sinh
-</a>
-
-</div>
+  <div class="links-row">
+    <a class="link-btn lk-web" href="https://hcmus.edu.vn" target="_blank">
+      🏛️ HCMUS
+    </a>
+    <a class="link-btn lk-score" href="https://tuyensinh.hcmus.edu.vn" target="_blank">
+      📘 Tuyển sinh
+    </a>
+    <a class="link-btn lk-score" href="https://tuyensinh.hcmus.edu.vn/2025-diem-chuan-cac-phuong-thuc/" target="_blank">
+      📊 Điểm chuẩn
+    </a>
+    <a class="link-btn lk-admit" href="https://tuyensinh.hcmus.edu.vn/de-an-tuyen-sinh/" target="_blank">
+      🎓 Đề án tuyển sinh
+    </a>
+  </div>
 
 </div>
 
 <script>
-function createTimer(id,targetDate){
-  const el=document.getElementById(id);
+function createTimer(id, targetDate) {
+  const el = document.getElementById(id);
 
-  function update(){
-    const now=new Date();
-    const diff=targetDate-now;
+  function update() {
+    const now = new Date();
+    const diff = targetDate - now;
 
-    if(diff<=0){
-      el.innerHTML="<h3>Đã tới rồi 🚀</h3>";
+    if (diff <= 0) {
+      el.innerHTML = "<h3>Đã tới rồi 🚀</h3>";
       return;
     }
 
-    const d=Math.floor(diff/(1000*60*60*24));
-    const h=Math.floor((diff/(1000*60*60))%24);
-    const m=Math.floor((diff/(1000*60))%60);
-    const s=Math.floor((diff/1000)%60);
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
 
     el.innerHTML =
-      '<div class="box"><div class="num">'+d+'</div><div class="txt">Ngày</div></div>' +
-      '<div class="box"><div class="num">'+h+'</div><div class="txt">Giờ</div></div>' +
-      '<div class="box"><div class="num">'+m+'</div><div class="txt">Phút</div></div>' +
-      '<div class="box"><div class="num">'+s+'</div><div class="txt">Giây</div></div>';
+      '<div class="box"><div class="num">' + d + '</div><div class="txt">Ngày</div></div>' +
+      '<div class="box"><div class="num">' + h + '</div><div class="txt">Giờ</div></div>' +
+      '<div class="box"><div class="num">' + m + '</div><div class="txt">Phút</div></div>' +
+      '<div class="box"><div class="num">' + s + '</div><div class="txt">Giây</div></div>';
   }
 
   update();
-  setInterval(update,1000);
+  setInterval(update, 1000);
 }
 
 createTimer(
